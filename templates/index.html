@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P-13 | E-Commerce Product Price Analyzer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: #1F3864;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header h1 { font-size: 1.35rem; }
+    .header p  { font-size: 0.82rem; opacity: 0.75; margin-top: 4px; }
+
+    /* ── Nav ── */
+    .nav { display: flex; gap: 10px; }
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 7px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.15);
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .nav a:hover, .nav a.active { background: #2E75B6; }
+
+    /* ── Main container ── */
+    .container {
+      max-width: 1150px;
+      margin: 28px auto;
+      padding: 0 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ── KPI row ── */
+    .kpi-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .kpi-card {
+      flex: 1;
+      min-width: 130px;
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .kpi-card .val { font-size: 1.8rem; font-weight: bold; color: #1F3864; }
+    .kpi-card .lbl { font-size: 0.78rem; color: #666; margin-top: 4px; }
+
+    /* ── Card ── */
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 26px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .card h2 {
+      font-size: 1.05rem;
+      color: #1F3864;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8edf3;
+    }
+
+    /* ── Category form ── */
+    .cat-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .cat-form select {
+      flex: 1;
+      min-width: 220px;
+      padding: 9px 12px;
+      border: 1px solid #ccd5e0;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      background: #f8fafc;
+      color: #1a1a2e;
+    }
+    .cat-form select:focus { border-color: #2E75B6; outline: none; }
+    .btn {
+      padding: 9px 22px;
+      background: #1F3864;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #2E75B6; }
+
+    /* ── Charts ── */
+    .chart-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .chart-box { flex: 1; min-width: 300px; }
+    .chart-box img { width: 100%; border-radius: 6px; margin-top: 8px; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    table.summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    table.summary-table th {
+      background: #1F3864;
+      color: white;
+      padding: 9px 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    table.summary-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eef2f7;
+      white-space: nowrap;
+    }
+    table.summary-table tr:hover td { background: #f0f6ff; }
+
+    /* ── Error box ── */
+    .error-box {
+      background: #fdecea;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #721c24;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 650px) {
+      .header { flex-direction: column; }
+      .chart-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header + Nav -->
+<div class="header">
+  <div>
+    <h1>E-Commerce Product Price Analyzer</h1>
+    <p>AI-130 · P-13 · Group 13 · Abdullah Mughal &amp; Huzaifa Abdureahaman</p>
+  </div>
+  <nav class="nav">
+    <a href="/" class="active">🏠 Home</a>
+    <a href="/top_deals">🔥 Top Deals</a>
+  </nav>
+</div>
+
+<div class="container">
+
+  {% if error %}
+  <div class="error-box">⚠ {{ error }}</div>
+  {% endif %}
+
+  <!-- KPI row -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="val">{{ total_products }}</div>
+      <div class="lbl">Total Products</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">{{ total_categories }}</div>
+      <div class="lbl">Categories</div>
+    </div>
+    <div class="kpi-card">
+      <div class="val">Amazon</div>
+      <div class="lbl">Data Source</div>
+    </div>
+  </div>
+
+  <!-- Category Explorer -->
+  <div class="card">
+    <h2>🔍 Explore a Category</h2>
+    <form class="cat-form" action="/category" method="POST">
+      <select name="category" required>
+        <option value="" disabled selected>Select a category...</option>
+        {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn" type="submit">Explore →</button>
+    </form>
+  </div>
+
+  <!-- Charts -->
+  <div class="card">
+    <h2>📊 Price Overview</h2>
+    <div class="chart-row">
+      <div class="chart-box">
+        <p style="font-size:0.83rem;color:#555">Overall distribution of discounted prices after outlier removal (IQR method).</p>
+        <img src="data:image/png;base64,{{ histplot }}" alt="Price distribution histogram">
+      </div>
+      <div class="chart-box">
+        <p style="font-size:0.83rem;color:#555">Price spread across the top 8 categories by product count.</p>
+        <img src="data:image/png;base64,{{ boxplot }}" alt="Category boxplot">
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Table -->
+  <div class="card">
+    <h2>📋 Category Summary (sorted by mean price)</h2>
+    <div class="table-wrap">
+      {{ summary_table | safe }}
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

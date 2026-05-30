@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ selected }} | P-13</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; min-height: 100vh; }
+
+    .header {
+      background: #1F3864; color: white; padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .header h1 { font-size: 1.35rem; }
+    .header p  { font-size: 0.82rem; opacity: 0.75; margin-top: 4px; }
+    .nav { display: flex; gap: 10px; }
+    .nav a {
+      color: white; text-decoration: none; font-size: 0.85rem;
+      padding: 7px 16px; border-radius: 20px;
+      background: rgba(255,255,255,0.15); transition: background 0.2s;
+    }
+    .nav a:hover { background: #2E75B6; }
+
+    .container { max-width: 1150px; margin: 28px auto; padding: 0 22px; display: flex; flex-direction: column; gap: 22px; }
+
+    .card { background: white; border-radius: 10px; padding: 26px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .card h2 { font-size: 1.05rem; color: #1F3864; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #e8edf3; }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+    .stat-pill { background: #eef4fb; border-radius: 9px; padding: 14px 10px; text-align: center; }
+    .stat-pill .val { font-size: 1.3rem; font-weight: bold; color: #1F3864; }
+    .stat-pill .lbl { font-size: 0.75rem; color: #666; margin-top: 4px; }
+
+    /* Two-col layout */
+    .two-col { display: flex; gap: 20px; flex-wrap: wrap; }
+    .two-col .chart-side { flex: 1; min-width: 280px; }
+    .two-col .chart-side img { width: 100%; border-radius: 6px; }
+    .two-col .form-side { flex: 1; min-width: 240px; }
+
+    .cat-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .cat-form select { flex: 1; min-width: 200px; padding: 9px 12px; border: 1px solid #ccd5e0; border-radius: 7px; font-size: 0.9rem; background: #f8fafc; }
+    .cat-form select:focus { border-color: #2E75B6; outline: none; }
+
+    .btn { padding: 9px 22px; background: #1F3864; color: white; border: none; border-radius: 7px; font-size: 0.9rem; font-weight: bold; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+    .btn:hover { background: #2E75B6; }
+    .btn-sec { background: transparent; border: 2px solid #1F3864; color: #1F3864; }
+    .btn-sec:hover { background: #1F3864; color: white; }
+
+    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    table.summary-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    table.summary-table th { background: #1F3864; color: white; padding: 9px 12px; text-align: left; white-space: nowrap; }
+    table.summary-table td { padding: 8px 12px; border-bottom: 1px solid #eef2f7; white-space: nowrap; }
+    table.summary-table tr:hover td { background: #f0f6ff; }
+
+    .breadcrumb { font-size: 0.83rem; color: #555; }
+    .breadcrumb a { color: #2E75B6; text-decoration: none; }
+
+    @media (max-width: 650px) { .header { flex-direction: column; } .two-col { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>E-Commerce Product Price Analyzer</h1>
+    <p>AI-130 · P-13 · Group 13 · Abdullah Mughal &amp; Huzaifa Abdureahaman</p>
+  </div>
+  <nav class="nav">
+    <a href="/">🏠 Home</a>
+    <a href="/top_deals">🔥 Top Deals</a>
+  </nav>
+</div>
+
+<div class="container">
+
+  <p class="breadcrumb"><a href="/">Home</a> › {{ selected }}</p>
+
+  <!-- Stats -->
+  <div class="card">
+    <h2>📦 Category: {{ selected }}</h2>
+    <div class="stats-grid">
+      <div class="stat-pill">
+        <div class="val">{{ stats.count }}</div>
+        <div class="lbl">Products</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val">₹{{ stats.mean_price }}</div>
+        <div class="lbl">Mean Price</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val">₹{{ stats.min_price }}</div>
+        <div class="lbl">Min Price</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val">₹{{ stats.max_price }}</div>
+        <div class="lbl">Max Price</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val">{{ stats.mean_rating }}</div>
+        <div class="lbl">Mean Rating</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val">{{ stats.mean_discount }}%</div>
+        <div class="lbl">Avg Discount</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boxplot + another category picker -->
+  <div class="card">
+    <h2>📈 Price Distribution</h2>
+    <div class="two-col">
+      <div class="chart-side">
+        <img src="data:image/png;base64,{{ boxplot }}" alt="Boxplot for {{ selected }}">
+      </div>
+      <div class="form-side">
+        <p style="font-size:0.86rem;color:#555;margin-bottom:14px;line-height:1.6">
+          Explore a different category using the dropdown below, or go back to the home page to see all categories.
+        </p>
+        <form class="cat-form" action="/category" method="POST" style="flex-direction:column;align-items:flex-start">
+          <select name="category" required>
+            <option value="" disabled selected>Select another category...</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if cat == selected %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+          </select>
+          <div style="display:flex;gap:10px;margin-top:10px">
+            <button class="btn" type="submit">Explore →</button>
+            <a class="btn btn-sec" href="/">← Back</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product table -->
+  <div class="card">
+    <h2>🛒 Products in "{{ selected }}" (top 30 by discount)</h2>
+    <div class="table-wrap">
+      {{ table | safe }}
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

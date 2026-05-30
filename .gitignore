@@ -1,0 +1,38 @@
+# Virtual environments
+E-Commerce/
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache and temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.jupyter/
+
+# Environments / Sensitive files
+.env
+.env.*
+*.env
+
+# Large datasets and generated/processed data
+data/amazon.csv
+data/processed_data.csv
+data/category_summary.csv
+categories.json
+charts.json
+
+# Exclude documentation files as their info is in README.md
+SETUP.md
+requirements.txt
+
+# Editor / OS Temporary Files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.~lock.*
+.~lock.*#
