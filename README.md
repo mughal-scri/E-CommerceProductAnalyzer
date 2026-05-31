@@ -1,7 +1,7 @@
 # E-Commerce Product Price Analyzer
 
 **AI-130 · Programming for Artificial Intelligence · Spring 2026**  
-**Group 13 · Abdullah Mughal & Huzaifa Abdureahaman**  
+**Group 13 · Abdullah Mughal & Huzaifa Abdur Rahaman**  
 **Instructor: Mr. Mustajab Hussain · Air University, Kamra**
 
 ---
