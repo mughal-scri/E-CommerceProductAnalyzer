@@ -12,7 +12,6 @@ Usage
 """
 
 import json
-import pandas as pd
 
 from data_processing import load_data, clean_data, add_discount_amount, remove_outliers
 from analysis import (

@@ -19,7 +19,6 @@ __pycache__/
 *.env
 
 # Large datasets and generated/processed data
-data/amazon.csv
 data/processed_data.csv
 data/category_summary.csv
 categories.json

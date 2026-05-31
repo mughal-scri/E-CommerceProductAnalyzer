@@ -3,151 +3,515 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P-13 | E-Commerce Product Price Analyzer</title>
+  <title>E-Commerce Product Price Analyzer</title>
+  <!-- Google Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      color: #1a1a2e;
-      min-height: 100vh;
+    /* ── Core Design System ── */
+    :root {
+      --primary: #4f46e5;       /* Indigo */
+      --primary-hover: #4338ca;
+      --secondary: #0f172a;     /* Slate 900 */
+      --background: #f8fafc;    /* Slate 50 */
+      --card-bg: #ffffff;
+      --text-main: #1e293b;     /* Slate 800 */
+      --text-muted: #64748b;    /* Slate 500 */
+      --border: #e2e8f0;        /* Slate 200 */
+      --accent-green: #10b981;  /* Emerald 500 */
+      --accent-red: #f43f5e;    /* Rose 500 */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     }
 
-    /* ── Header ── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--background);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header & Navbar ── */
     .header {
-      background: #1F3864;
+      background-color: var(--secondary);
       color: white;
-      padding: 20px 40px;
+      padding: 1.5rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .header h1 { font-size: 1.35rem; }
-    .header p  { font-size: 0.82rem; opacity: 0.75; margin-top: 4px; }
 
-    /* ── Nav ── */
-    .nav { display: flex; gap: 10px; }
-    .nav a {
-      color: white;
-      text-decoration: none;
+    .header-info h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .header-info p {
       font-size: 0.85rem;
-      padding: 7px 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.15);
-      transition: background 0.2s;
-      white-space: nowrap;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      font-weight: 400;
     }
-    .nav a:hover, .nav a.active { background: #2E75B6; }
 
-    /* ── Main container ── */
+    .nav {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .nav a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.625rem 1.25rem;
+      border-radius: 9999px;
+      background-color: rgba(255, 255, 255, 0.05);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav a:hover {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav a.active {
+      color: white;
+      background-color: var(--primary);
+      box-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+      border-color: var(--primary);
+    }
+
+    /* ── Main Container ── */
     .container {
-      max-width: 1150px;
-      margin: 28px auto;
-      padding: 0 22px;
+      max-width: 1200px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 2rem;
     }
 
-    /* ── KPI row ── */
-    .kpi-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    /* ── KPI Row ── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
     .kpi-card {
-      flex: 1;
-      min-width: 130px;
-      background: white;
-      border-radius: 10px;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .kpi-card .val { font-size: 1.8rem; font-weight: bold; color: #1F3864; }
-    .kpi-card .lbl { font-size: 0.78rem; color: #666; margin-top: 4px; }
 
-    /* ── Card ── */
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-card .lbl {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      order: 1;
+    }
+
+    .kpi-card .val {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--secondary);
+      order: 2;
+      margin-top: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    /* ── Card Layouts ── */
     .card {
-      background: white;
-      border-radius: 10px;
-      padding: 26px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    }
-    .card h2 {
-      font-size: 1.05rem;
-      color: #1F3864;
-      margin-bottom: 18px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e8edf3;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
-    /* ── Category form ── */
-    .cat-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Forms ── */
+    .cat-form {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     .cat-form select {
       flex: 1;
-      min-width: 220px;
-      padding: 9px 12px;
-      border: 1px solid #ccd5e0;
-      border-radius: 7px;
-      font-size: 0.9rem;
-      background: #f8fafc;
-      color: #1a1a2e;
+      min-width: 280px;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background-color: #fafafa;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, background-color 0.2s;
+      cursor: pointer;
     }
-    .cat-form select:focus { border-color: #2E75B6; outline: none; }
+
+    .cat-form select:focus {
+      border-color: var(--primary);
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
     .btn {
-      padding: 9px 22px;
-      background: #1F3864;
+      padding: 0.75rem 1.75rem;
+      background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 7px;
-      font-size: 0.9rem;
-      font-weight: bold;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s;
+      font-family: inherit;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.15);
     }
-    .btn:hover { background: #2E75B6; }
 
-    /* ── Charts ── */
-    .chart-row { display: flex; gap: 20px; flex-wrap: wrap; }
-    .chart-box { flex: 1; min-width: 300px; }
-    .chart-box img { width: 100%; border-radius: 6px; margin-top: 8px; }
+    .btn:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.25);
+      transform: translateY(-1px);
+    }
 
-    /* ── Tables ── */
-    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* ── Charts Presentation ── */
+    .chart-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .chart-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      background-color: #fafafa;
+    }
+
+    .chart-box h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .chart-box p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .chart-box img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      display: block;
+      border: 1px solid var(--border);
+      background-color: white;
+    }
+
+    /* Stack charts on top of each other at full width for readability */
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    /* ── Tables & Interactive Wrapper ── */
+    .table-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      max-width: 320px;
+      min-width: 200px;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-wrapper input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .page-size-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .page-size-selector select {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
     table.summary-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.86rem;
-    }
-    table.summary-table th {
-      background: #1F3864;
-      color: white;
-      padding: 9px 12px;
+      font-size: 0.875rem;
       text-align: left;
-      white-space: nowrap;
     }
+
+    table.summary-table th {
+      background-color: #f8fafc;
+      color: var(--secondary);
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      transition: background-color 0.2s;
+    }
+
+    table.summary-table th:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* Sorting indicators */
+    table.summary-table th::after {
+      content: ' ↕';
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.4;
+      margin-left: 0.25rem;
+    }
+    table.summary-table th.sort-asc::after {
+      content: ' ↑';
+      color: var(--primary);
+      opacity: 1;
+    }
+    table.summary-table th.sort-desc::after {
+      content: ' ↓';
+      color: var(--primary);
+      opacity: 1;
+    }
+
     table.summary-table td {
-      padding: 8px 12px;
-      border-bottom: 1px solid #eef2f7;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text-main);
       white-space: nowrap;
     }
-    table.summary-table tr:hover td { background: #f0f6ff; }
 
-    /* ── Error box ── */
-    .error-box {
-      background: #fdecea;
-      border: 1px solid #f5c6cb;
-      border-radius: 8px;
-      padding: 14px 18px;
-      color: #721c24;
-      font-size: 0.9rem;
+    table.summary-table tr:last-child td {
+      border-bottom: none;
     }
 
-    @media (max-width: 650px) {
-      .header { flex-direction: column; }
-      .chart-row { flex-direction: column; }
+    table.summary-table tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    /* Text Left-aligned, numbers right-aligned, ratings centered */
+    .align-left { text-align: left; }
+    .align-right { text-align: right; font-variant-numeric: tabular-nums; }
+    .align-center { text-align: center; }
+
+    /* Custom Badges */
+    .badge-rating {
+      background-color: #fef9c3;
+      color: #713f12;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border: 1px solid #fef08a;
+    }
+
+    .badge-count {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      border: 1px solid #bae6fd;
+    }
+
+    /* ── Pagination ── */
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .pagination {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .pagination button {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      background-color: white;
+      color: var(--text-main);
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: #f5f3ff;
+    }
+
+    .pagination button.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    }
+
+    .pagination button:disabled {
+      color: var(--text-muted);
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: #f1f5f9;
+    }
+
+    /* ── Error Box ── */
+    .error-box {
+      background-color: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--accent-red);
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .nav {
+        width: 100%;
+      }
+      .nav a {
+        flex: 1;
+        text-align: center;
+      }
+      .kpi-row {
+        grid-template-columns: 1fr;
+      }
+      .table-controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .search-wrapper {
+        max-width: 100%;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -155,9 +519,9 @@
 
 <!-- Header + Nav -->
 <div class="header">
-  <div>
+  <div class="header-info">
     <h1>E-Commerce Product Price Analyzer</h1>
-    <p>AI-130 · P-13 · Group 13 · Abdullah Mughal &amp; Huzaifa Abdureahaman</p>
+    <p>AI-130 · Programming for Artificial Intelligence · Group 13</p>
   </div>
   <nav class="nav">
     <a href="/" class="active">🏠 Home</a>
@@ -168,22 +532,25 @@
 <div class="container">
 
   {% if error %}
-  <div class="error-box">⚠ {{ error }}</div>
+  <div class="error-box">
+    <span>⚠️</span>
+    <div>{{ error }}</div>
+  </div>
   {% endif %}
 
   <!-- KPI row -->
   <div class="kpi-row">
     <div class="kpi-card">
       <div class="val">{{ total_products }}</div>
-      <div class="lbl">Total Products</div>
+      <div class="lbl">Total Products Cleaned</div>
     </div>
     <div class="kpi-card">
       <div class="val">{{ total_categories }}</div>
-      <div class="lbl">Categories</div>
+      <div class="lbl">Unique Categories</div>
     </div>
     <div class="kpi-card">
-      <div class="val">Amazon</div>
-      <div class="lbl">Data Source</div>
+      <div class="val">Amazon Sales</div>
+      <div class="lbl">Primary Dataset</div>
     </div>
   </div>
 
@@ -192,25 +559,27 @@
     <h2>🔍 Explore a Category</h2>
     <form class="cat-form" action="/category" method="POST">
       <select name="category" required>
-        <option value="" disabled selected>Select a category...</option>
+        <option value="" disabled selected>Select a product category to analyze...</option>
         {% for cat in categories %}
         <option value="{{ cat }}">{{ cat }}</option>
         {% endfor %}
       </select>
-      <button class="btn" type="submit">Explore →</button>
+      <button class="btn" type="submit">Explore Category →</button>
     </form>
   </div>
 
   <!-- Charts -->
   <div class="card">
-    <h2>📊 Price Overview</h2>
-    <div class="chart-row">
+    <h2>📊 Price & Category Distribution</h2>
+    <div class="chart-section">
       <div class="chart-box">
-        <p style="font-size:0.83rem;color:#555">Overall distribution of discounted prices after outlier removal (IQR method).</p>
+        <h3>1. Price Distribution</h3>
+        <p>Distribution of discounted prices across all products (outliers removed using the Interquartile Range method).</p>
         <img src="data:image/png;base64,{{ histplot }}" alt="Price distribution histogram">
       </div>
       <div class="chart-box">
-        <p style="font-size:0.83rem;color:#555">Price spread across the top 8 categories by product count.</p>
+        <h3>2. Price Spread across Top Categories</h3>
+        <p>Comparison of discounted prices across the top 8 categories by product count. Stretched horizontally for clarity.</p>
         <img src="data:image/png;base64,{{ boxplot }}" alt="Category boxplot">
       </div>
     </div>
@@ -218,12 +587,278 @@
 
   <!-- Summary Table -->
   <div class="card">
-    <h2>📋 Category Summary (sorted by mean price)</h2>
-    <div class="table-wrap">
-      {{ summary_table | safe }}
+    <h2>📋 Category Summary Table</h2>
+    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+      Detailed summary of prices and ratings aggregated per category, sorted by average price descending. Click headers to sort, search to filter.
+    </p>
+    <div class="table-container">
+      <!-- Hidden raw table rendered by Pandas that we will parse using Javascript -->
+      <div id="raw-table-holder" style="display: none;">
+        {{ summary_table | safe }}
+      </div>
+      
+      <!-- Interactive JS Table will be inserted here -->
+      <div id="interactive-table-root"></div>
     </div>
   </div>
 
 </div>
+
+<!-- Interactive Table JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const rawTable = document.querySelector('#raw-table-holder table');
+    if (!rawTable) return;
+
+    // ── 1. Parse Data from Pandas HTML Table ──
+    const headers = [];
+    const rows = [];
+
+    // Parse headers
+    rawTable.querySelectorAll('thead th').forEach((th, idx) => {
+      let rawHeader = th.textContent.trim();
+      let label = rawHeader;
+      
+      // Clean header names
+      if (rawHeader === 'category') label = 'Category';
+      else if (rawHeader === 'mean_price') label = 'Mean Price (₹)';
+      else if (rawHeader === 'mean_rating') label = 'Average Rating';
+      else if (rawHeader === 'product_count') label = 'Product Count';
+
+      // Guess alignments based on headers
+      let alignment = 'align-left';
+      if (['mean_price', 'mean_rating', 'product_count'].includes(rawHeader)) {
+        alignment = 'align-right';
+      }
+
+      headers.push({
+        id: rawHeader,
+        label: label,
+        alignment: alignment
+      });
+    });
+
+    // Parse body rows
+    rawTable.querySelectorAll('tbody tr').forEach(tr => {
+      const rowData = {};
+      tr.querySelectorAll('td').forEach((td, idx) => {
+        const headerId = headers[idx].id;
+        const textVal = td.textContent.trim();
+        
+        // Parse numerical types for correct sorting
+        let parsedVal = textVal;
+        if (headerId === 'mean_price' || headerId === 'mean_rating') {
+          parsedVal = parseFloat(textVal) || 0;
+        } else if (headerId === 'product_count') {
+          parsedVal = parseInt(textVal, 10) || 0;
+        }
+
+        rowData[headerId] = parsedVal;
+      });
+      rows.push(rowData);
+    });
+
+    // ── 2. Table State ──
+    let state = {
+      data: [...rows],
+      filteredData: [...rows],
+      sortBy: 'mean_price',
+      sortAsc: false, // Default sort by descending price
+      searchQuery: '',
+      pageSize: 10,
+      currentPage: 1
+    };
+
+    // ── 3. Build UI Controls Structure ──
+    const root = document.getElementById('interactive-table-root');
+    root.innerHTML = `
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <input type="text" id="table-search" placeholder="Search categories...">
+        </div>
+        <div class="page-size-selector">
+          <label>Rows per page:</label>
+          <select id="table-page-size">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-wrap">
+        <table class="summary-table">
+          <thead>
+            <tr id="table-header-row"></tr>
+          </thead>
+          <tbody id="table-body-row"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div id="table-info"></div>
+        <div class="pagination" id="table-pagination"></div>
+      </div>
+    `;
+
+    // ── 4. Rendering logic ──
+    function renderTable() {
+      // Apply Search Filter
+      state.filteredData = state.data.filter(row => {
+        return Object.values(row).some(val => 
+          String(val).toLowerCase().includes(state.searchQuery.toLowerCase())
+        );
+      });
+
+      // Apply Sort
+      if (state.sortBy) {
+        state.filteredData.sort((a, b) => {
+          let valA = a[state.sortBy];
+          let valB = b[state.sortBy];
+
+          if (typeof valA === 'string') {
+            return state.sortAsc 
+              ? valA.localeCompare(valB) 
+              : valB.localeCompare(valA);
+          } else {
+            return state.sortAsc ? valA - valB : valB - valA;
+          }
+        });
+      }
+
+      // Pagination details
+      const totalRows = state.filteredData.length;
+      const totalPages = Math.ceil(totalRows / state.pageSize) || 1;
+      if (state.currentPage > totalPages) state.currentPage = totalPages;
+
+      const startIdx = (state.currentPage - 1) * state.pageSize;
+      const endIdx = Math.min(startIdx + state.pageSize, totalRows);
+      const pageData = state.filteredData.slice(startIdx, endIdx);
+
+      // Render Headers
+      const headerRow = document.getElementById('table-header-row');
+      headerRow.innerHTML = headers.map(h => {
+        let sortClass = '';
+        if (state.sortBy === h.id) {
+          sortClass = state.sortAsc ? 'sort-asc' : 'sort-desc';
+        }
+        return `<th class="${h.alignment} ${sortClass}" data-col="${h.id}">${h.label}</th>`;
+      }).join('');
+
+      // Add click events to headers for sorting
+      headerRow.querySelectorAll('th').forEach(th => {
+        th.addEventListener('click', () => {
+          const colId = th.getAttribute('data-col');
+          if (state.sortBy === colId) {
+            state.sortAsc = !state.sortAsc;
+          } else {
+            state.sortBy = colId;
+            state.sortAsc = true;
+          }
+          renderTable();
+        });
+      });
+
+      // Render Body Rows
+      const bodyRow = document.getElementById('table-body-row');
+      if (pageData.length === 0) {
+        bodyRow.innerHTML = `<tr><td colspan="${headers.length}" class="align-center" style="color: var(--text-muted); padding: 2rem;">No matching categories found</td></tr>`;
+      } else {
+        bodyRow.innerHTML = pageData.map(row => {
+          return `
+            <tr>
+              ${headers.map(h => {
+                let cellVal = row[h.id];
+                let formattedCell = cellVal;
+
+                // Format values for nice presentation
+                if (h.id === 'mean_price') {
+                  formattedCell = `₹${cellVal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                } else if (h.id === 'mean_rating') {
+                  formattedCell = `<span class="badge-rating">${cellVal} ★</span>`;
+                } else if (h.id === 'product_count') {
+                  formattedCell = `<span class="badge-count">${cellVal}</span>`;
+                }
+
+                return `<td class="${h.alignment}">${formattedCell}</td>`;
+              }).join('')}
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Render Info
+      const infoBox = document.getElementById('table-info');
+      if (totalRows === 0) {
+        infoBox.textContent = 'Showing 0 to 0 of 0 categories';
+      } else {
+        infoBox.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${totalRows} categories`;
+      }
+
+      // Render Pagination Buttons
+      const pag = document.getElementById('table-pagination');
+      let pagHTML = `<button id="btn-prev" ${state.currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
+      
+      for (let i = 1; i <= totalPages; i++) {
+        // Simple pagination bounds logic for large number of pages
+        if (totalPages > 6 && Math.abs(state.currentPage - i) > 2 && i !== 1 && i !== totalPages) {
+          if (i === 2 || i === totalPages - 1) {
+            pagHTML += `<span style="padding: 0 0.5rem">...</span>`;
+          }
+          continue;
+        }
+        
+        pagHTML += `<button class="page-num ${state.currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+      }
+      pagHTML += `<button id="btn-next" ${state.currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+      pag.innerHTML = pagHTML;
+
+      // Pagination Events
+      pag.querySelectorAll('.page-num').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.currentPage = parseInt(btn.getAttribute('data-page'), 10);
+          renderTable();
+        });
+      });
+
+      const prevBtn = document.getElementById('btn-prev');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (state.currentPage > 1) {
+            state.currentPage--;
+            renderTable();
+          }
+        });
+      }
+
+      const nextBtn = document.getElementById('btn-next');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (state.currentPage < totalPages) {
+            state.currentPage++;
+            renderTable();
+          }
+        });
+      }
+    }
+
+    // ── 5. Setup Event Listeners for controls ──
+    document.getElementById('table-search').addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      state.currentPage = 1;
+      renderTable();
+    });
+
+    document.getElementById('table-page-size').addEventListener('change', (e) => {
+      state.pageSize = parseInt(e.target.value, 10);
+      state.currentPage = 1;
+      renderTable();
+    });
+
+    // Initial render
+    renderTable();
+  });
+</script>
 </body>
 </html>

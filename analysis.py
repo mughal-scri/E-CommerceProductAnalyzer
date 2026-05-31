@@ -9,7 +9,6 @@ so Flask can embed them directly in HTML templates.
 import io
 import base64
 
-import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')          # non-interactive backend — required for Flask
@@ -131,12 +130,27 @@ def get_price_histplot(df: pd.DataFrame) -> str:
     str
         Base64-encoded PNG string for use in an HTML <img> tag.
     """
-    fig, ax = plt.subplots(figsize=(9, 4))
-    sns.histplot(df['discounted_price'].dropna(), bins=40, kde=True,
-                 color='#2E75B6', ax=ax)
-    ax.set_xlabel('Discounted Price (₹)', fontsize=11)
-    ax.set_ylabel('Number of Products', fontsize=11)
-    ax.set_title('Distribution of Discounted Prices (after outlier removal)', fontsize=13, fontweight='bold')
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.histplot(
+        df['discounted_price'].dropna(),
+        bins=40,
+        kde=True,
+        color='#4f46e5',
+        edgecolor='white',
+        linewidth=0.8,
+        alpha=0.85,
+        ax=ax
+    )
+    ax.set_xlabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
+    ax.set_ylabel('Number of Products', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
+    ax.set_title('Distribution of Discounted Prices (After Outlier Removal)', fontsize=14, fontweight='bold', pad=15, color='#111827')
+    ax.grid(True, linestyle='--', alpha=0.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#e5e7eb')
+    ax.spines['bottom'].set_color('#e5e7eb')
+    plt.xticks(fontsize=10, color='#4b5563')
+    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
@@ -169,20 +183,29 @@ def get_category_boxplot(df: pd.DataFrame, top_n: int = 8) -> str:
     )
     df_top = df[df['category'].isin(top_cats)]
 
-    fig, ax = plt.subplots(figsize=(11, 5))
+    fig, ax = plt.subplots(figsize=(12, 6))
     sns.boxplot(
         data=df_top,
         x='category',
         y='discounted_price',
         hue='category',
-        palette='Set2',
+        palette='Blues_r',
         legend=False,
         ax=ax,
+        width=0.6,
+        linewidth=1.2,
+        flierprops=dict(marker='o', markerfacecolor='#f43f5e', markersize=4, markeredgecolor='none', alpha=0.5)
     )
-    ax.set_xlabel('Category', fontsize=11)
-    ax.set_ylabel('Discounted Price (₹)', fontsize=11)
-    ax.set_title(f'Price Distribution — Top {top_n} Categories', fontsize=13, fontweight='bold')
-    plt.xticks(rotation=30, ha='right', fontsize=9)
+    ax.set_xlabel('Category', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
+    ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
+    ax.set_title(f'Price Spread — Top {top_n} Categories (by Product Count)', fontsize=14, fontweight='bold', pad=15, color='#111827')
+    ax.grid(True, axis='y', linestyle='--', alpha=0.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#e5e7eb')
+    ax.spines['bottom'].set_color('#e5e7eb')
+    plt.xticks(rotation=28, ha='right', fontsize=9, color='#4b5563')
+    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
@@ -208,10 +231,24 @@ def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
     """
     filtered = df[df['category'] == category]
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sns.boxplot(y=filtered['discounted_price'], color='#2E75B6', ax=ax)
-    ax.set_ylabel('Discounted Price (₹)', fontsize=11)
-    ax.set_title(f'Price Distribution — {category}', fontsize=12, fontweight='bold')
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    sns.boxplot(
+        y=filtered['discounted_price'],
+        color='#3b82f6',
+        ax=ax,
+        width=0.4,
+        linewidth=1.2,
+        flierprops=dict(marker='o', markerfacecolor='#f43f5e', markersize=4, markeredgecolor='none', alpha=0.5)
+    )
+    ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
+    ax.set_title(f'Price Spread — {category}', fontsize=14, fontweight='bold', pad=15, color='#111827')
+    ax.grid(True, axis='y', linestyle='--', alpha=0.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#e5e7eb')
+    ax.spines['bottom'].set_color('#e5e7eb')
+    plt.xticks([])
+    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
@@ -224,7 +261,8 @@ def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
 def _fig_to_base64(fig) -> str:
     """Convert a Matplotlib figure to a base64-encoded PNG string."""
     buf = io.BytesIO()
-    fig.savefig(buf, format='png', dpi=150, bbox_inches='tight')
+    fig.savefig(buf, format='png', dpi=220, bbox_inches='tight')
     buf.seek(0)
     encoded = base64.b64encode(buf.read()).decode('utf-8')
     return encoded
+
