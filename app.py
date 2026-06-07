@@ -22,8 +22,6 @@ from analysis import (
 
 app = Flask(__name__)
 
-
-# ── Load all artifacts once at startup ──────────────────────────────────────
 try:
     DF = pd.read_csv('data/processed_data.csv')
     SUMMARY = pd.read_csv('data/category_summary.csv')
@@ -42,8 +40,6 @@ except FileNotFoundError as e:
     print("[app] Please run 'python prepare.py' first.")
     DF, SUMMARY, CHARTS, CATEGORIES = None, None, {}, []
 
-
-# ── Routes ───────────────────────────────────────────────────────────────────
 
 @app.route('/', methods=['GET'])
 def index():
@@ -158,7 +154,8 @@ def top_deals():
     )
 
 
-# ── Run ──────────────────────────────────────────────────────────────────────
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

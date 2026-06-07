@@ -24,28 +24,29 @@ from analysis import (
 def main():
     """Full data preparation pipeline — run once before starting Flask."""
 
-    # ── Step 1: Load ─────────────────────────────────────────────────────────
+    #  Load the Dataset from the file... even if the path is not given it'll do the work.
+    # Because of the Default parameter given to it in definition
     df = load_data('data/amazon.csv')
 
-    # ── Step 2: Clean ────────────────────────────────────────────────────────
+    # Clean the DataSet after loading it - safe convert values to numeric like prices percentages like columns
     df = clean_data(df)
 
-    # ── Step 3: Feature engineering — discount_amount ─────────────────────────
+    # Add the Discount Amount to the DataFrame - a.k.a Feature Engineering
     df = add_discount_amount(df)
 
-    # ── Step 4: Remove outliers using IQR ────────────────────────────────────
+    # Remove Outliers (Outbounds that might disturb during plotting) using IQR method
     df = remove_outliers(df, col='discounted_price')
 
-    # ── Step 5: Save cleaned data to CSV ─────────────────────────────────────
+    # Safe the cleaned and converted DataFrame into csv file for further use
     df.to_csv('data/processed_data.csv', index=False)
     print("[prepare] processed_data.csv saved.")
 
-    # ── Step 6: Compute and save category summary ─────────────────────────────
+    # Compute the Summary of the category groupby table like mean values, counts, maximums etc and save them in csv
     summary = get_category_summary(df)
     summary.to_csv('data/category_summary.csv', index=False)
     print("[prepare] category_summary.csv saved.")
 
-    # ── Step 7: Generate and save charts ─────────────────────────────────────
+    # Generate the Charts and convert them into json format for use on the WebPage
     print("[prepare] Generating charts (this may take a few seconds)...")
     histplot_b64 = get_price_histplot(df)
     boxplot_b64  = get_category_boxplot(df, top_n=8)
@@ -57,7 +58,7 @@ def main():
         }, f)
     print("[prepare] charts.json saved.")
 
-    # ── Step 8: Save category list for Flask dropdown ─────────────────────────
+    # Generate JSON file that contains present categories, used for Flask Webpage - Dropdown 
     categories = sorted(df['category'].dropna().unique().tolist())
     with open('categories.json', 'w') as f:
         json.dump(categories, f)
@@ -65,6 +66,6 @@ def main():
 
     print("\n[prepare] ✓ All done! Now run:  python app.py")
 
-
+# Run the Application 
 if __name__ == '__main__':
     main()

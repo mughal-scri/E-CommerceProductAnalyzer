@@ -16,8 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# ── GroupBy summary ──────────────────────────────────────────────────────────
-
+# Group-By Category -> Calculate Aggregate -> Reset_index -> Sort_Values -> round to 2-Decimal Places
 def get_category_summary(df: pd.DataFrame) -> pd.DataFrame:
     """
     Use GroupBy to compute per-category statistics:
@@ -54,7 +53,7 @@ def get_category_summary(df: pd.DataFrame) -> pd.DataFrame:
     print(f"[analysis] Category summary: {len(summary)} categories.")
     return summary
 
-
+# Get The Category That User Asked about: Get the category from DataFrame and sort values of spcific Column for plotting (in further use)
 def get_category_filtered(df: pd.DataFrame, category: str) -> pd.DataFrame:
     """
     Filter the DataFrame to a single category and return it
@@ -110,12 +109,15 @@ def get_top_deals(df: pd.DataFrame, n: int = 20) -> pd.DataFrame:
         .head(n)
         .reset_index(drop=True)
     )
-    top.index += 1    # start rank from 1
+    # Instead of starting from the index zero which usually the case in arrays
+    # So this line will change the index of each row by 1 means index 0 will become index 1
+    top.index += 1    
     return top
 
 
-# ── Chart generators ─────────────────────────────────────────────────────────
+# -------------------- Chart Generations ---------------------------------------
 
+# Get the histogram plot of the Prices from each category --- All-in-One and return in compatible format to use on WebPage
 def get_price_histplot(df: pd.DataFrame) -> str:
     """
     Create a Seaborn histplot of overall discounted prices.
@@ -145,10 +147,6 @@ def get_price_histplot(df: pd.DataFrame) -> str:
     ax.set_ylabel('Number of Products', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title('Distribution of Discounted Prices (After Outlier Removal)', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, linestyle='--', alpha=0.5)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_color('#e5e7eb')
-    ax.spines['bottom'].set_color('#e5e7eb')
     plt.xticks(fontsize=10, color='#4b5563')
     plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
@@ -157,7 +155,7 @@ def get_price_histplot(df: pd.DataFrame) -> str:
     plt.close(fig)
     return result
 
-
+# Get the Box plot of all categories - All-in-One - And return it in compatible format to show on WebPage
 def get_category_boxplot(df: pd.DataFrame, top_n: int = 8) -> str:
     """
     Create a Seaborn box plot of discounted prices for the top N categories
@@ -193,17 +191,12 @@ def get_category_boxplot(df: pd.DataFrame, top_n: int = 8) -> str:
         legend=False,
         ax=ax,
         width=0.6,
-        linewidth=1.2,
-        flierprops=dict(marker='o', markerfacecolor='#f43f5e', markersize=4, markeredgecolor='none', alpha=0.5)
+        linewidth=1.2
     )
     ax.set_xlabel('Category', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title(f'Price Spread — Top {top_n} Categories (by Product Count)', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, axis='y', linestyle='--', alpha=0.5)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_color('#e5e7eb')
-    ax.spines['bottom'].set_color('#e5e7eb')
     plt.xticks(rotation=28, ha='right', fontsize=9, color='#4b5563')
     plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
@@ -212,7 +205,7 @@ def get_category_boxplot(df: pd.DataFrame, top_n: int = 8) -> str:
     plt.close(fig)
     return result
 
-
+# Get the Box Plot of single required Category from the DataFrame
 def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
     """
     Create a Seaborn box plot for a single selected category.
@@ -237,16 +230,11 @@ def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
         color='#3b82f6',
         ax=ax,
         width=0.4,
-        linewidth=1.2,
-        flierprops=dict(marker='o', markerfacecolor='#f43f5e', markersize=4, markeredgecolor='none', alpha=0.5)
+        linewidth=1.2
     )
     ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title(f'Price Spread — {category}', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, axis='y', linestyle='--', alpha=0.5)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_color('#e5e7eb')
-    ax.spines['bottom'].set_color('#e5e7eb')
     plt.xticks([])
     plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
@@ -255,9 +243,7 @@ def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
     plt.close(fig)
     return result
 
-
-# ── Internal helper ──────────────────────────────────────────────────────────
-
+# the Figure to base64 Converter Function - takes a fig and returns a str
 def _fig_to_base64(fig) -> str:
     """Convert a Matplotlib figure to a base64-encoded PNG string."""
     buf = io.BytesIO()

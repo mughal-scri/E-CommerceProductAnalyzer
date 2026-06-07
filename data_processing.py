@@ -11,7 +11,7 @@ Source  : https://www.kaggle.com/datasets/karkavelrajaj/amazon-sales-dataset
 import numpy as np
 import pandas as pd
 
-# Columns we actually need from the raw CSV
+# Columns Required from the Actual RAW CSV file 
 REQUIRED_COLS = [
     'product_name',
     'category',
@@ -49,12 +49,11 @@ def load_data(filepath: str = DATA_PATH) -> pd.DataFrame:
         raise FileNotFoundError(
             f"Dataset not found at '{filepath}'.\n"
             "Download amazon.csv from Kaggle and place it inside the 'data/' folder.\n"
-            "URL: https://www.kaggle.com/datasets/karkavelrajaj/amazon-sales-dataset"
         )
 
     print(f"[data_processing] Loaded {len(df)} rows, {len(df.columns)} columns.")
 
-    # Keep only the 6 columns we need
+    # Deep Copy the Required Columns for further Use
     df = df[REQUIRED_COLS].copy()
     print(f"[data_processing] Kept columns: {REQUIRED_COLS}")
     return df
@@ -80,7 +79,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
 
-    # ── Clean price columns: strip ₹ and commas, cast to float ──────────────
+    # Clean the Columns and convert into numeric - $12,000 is not numeric but is an object64 needs conversion
     for col in ['discounted_price', 'actual_price']:
         df[col] = (
             df[col]
@@ -91,7 +90,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         )
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    # ── Clean discount_percentage ────────────────────────────────────────────
+    # Clean the Column and convert into numeric - 74% is not numeric... It needs conversion 
     df['discount_percentage'] = (
         df['discount_percentage']
         .astype(str)
@@ -100,15 +99,15 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     )
     df['discount_percentage'] = pd.to_numeric(df['discount_percentage'], errors='coerce')
 
-    # ── Clean rating ─────────────────────────────────────────────────────────
+    # Check if in case any of the entry in the dataset rating column is not numeric if it is then convert it!
     df['rating'] = pd.to_numeric(df['rating'], errors='coerce')
 
-    # ── Drop rows where prices are null ─────────────────────────────────────
+    # Drop the Rows where the Prices are null or partially written... 
     before = len(df)
     df.dropna(subset=['discounted_price', 'actual_price'], inplace=True)
     print(f"[data_processing] Dropped {before - len(df)} rows with null prices. Remaining: {len(df)}")
 
-    # ── Extract top-level category (split on | and take first part) ──────────
+    # Extract Top-lvl Category - "Electronics|Mobile&Accessories|Chargers" --to--> "Electronics"
     df['category'] = df['category'].astype(str).str.split('|').str[0].str.strip()
 
     print(f"[data_processing] Unique categories: {df['category'].nunique()}")
