@@ -52,7 +52,7 @@ def index():
     summary_html = SUMMARY.to_html(
         classes='summary-table',
         index=False,
-        border=0,
+        border=0, 
     )
 
     return render_template(

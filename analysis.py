@@ -147,8 +147,6 @@ def get_price_histplot(df: pd.DataFrame) -> str:
     ax.set_ylabel('Number of Products', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title('Distribution of Discounted Prices (After Outlier Removal)', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, linestyle='--', alpha=0.5)
-    plt.xticks(fontsize=10, color='#4b5563')
-    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
@@ -197,8 +195,6 @@ def get_category_boxplot(df: pd.DataFrame, top_n: int = 8) -> str:
     ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title(f'Price Spread — Top {top_n} Categories (by Product Count)', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, axis='y', linestyle='--', alpha=0.5)
-    plt.xticks(rotation=28, ha='right', fontsize=9, color='#4b5563')
-    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
@@ -235,8 +231,6 @@ def get_single_category_boxplot(df: pd.DataFrame, category: str) -> str:
     ax.set_ylabel('Discounted Price (₹)', fontsize=12, fontweight='semibold', labelpad=10, color='#374151')
     ax.set_title(f'Price Spread — {category}', fontsize=14, fontweight='bold', pad=15, color='#111827')
     ax.grid(True, axis='y', linestyle='--', alpha=0.5)
-    plt.xticks([])
-    plt.yticks(fontsize=10, color='#4b5563')
     plt.tight_layout()
 
     result = _fig_to_base64(fig)
